@@ -8,9 +8,9 @@ module.exports = {
         return db.query(`insert into t_user set ?`, { username, password, phone });
     },
     getUserByPhone(phone) {
-        return db.query(`SELECT * FROM t_user where username='${phone}'`);
+        return db.query(`SELECT * FROM t_user where phone='${phone}'`);
     },
     getUserByPassword(password) {
-        return db.query(`SELECT * FROM t_user where username='${password}'`);
+        return db.query(`SELECT * FROM t_user where password='${password}'`);
     }
 };

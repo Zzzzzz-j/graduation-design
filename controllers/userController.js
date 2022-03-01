@@ -20,13 +20,16 @@ module.exports = {
     },
     async regist(req, res) {
         const { username, password, phone } = req.body;
-        let results = await model.saveUser(username, password, phone);
-        if (results.insertId) { // 通过判断insertId是不是有正常值，如果有，说明插入成功
-            res.status(200).json({message: '注册成功!'});
+        const result = await model.getUserByPhone(phone);
+        if (result.length > 0) {
+            res.status(200).json({ status: 1001, message: '该手机号已被注册!' });
         } else {
-            await ctx.render('error', {
-                message: '注册失败!'
-            });
+            const results = await model.saveUser(username, password, phone);
+            if (results.insertId) { // 通过判断insertId是不是有正常值，如果有，说明插入成功
+                res.status(200).json({ status: 200, message: '注册成功!' });
+            } else {
+                await res.status(200).json({ status: 1002, message: '注册失败!' });
+            }
         }
     },
     async checkUser(ctx) {
