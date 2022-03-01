@@ -1,25 +1,24 @@
 import React from 'react';
 import { testApi, registerAccount } from '../../api/index';
-import axios from 'axios';
+import './index.scss';
 
 
 const Login = () => {
     React.useEffect(() => {
-        // console.log('11111111');
         testApi({a: '11111'}).then(res => {
             console.log(res,'3333333333333');
         })
         registerAccount({username: 'zhujie', phone: 18863324705, password: 123456}).then(res => {
             console.log(res,'222222222');
         })
-        // axios.get('http://localhost:5000/api/users/test?id=111111').then(res => {
-        //     console.log(res,'res');
-        // })
     },[])
 
     return (
-        <div>
+        <div className='login'>
             Hello World!
+            <div className='login-main'>
+                
+            </div>
         </div>
     )
 }
