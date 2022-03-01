@@ -1,8 +1,28 @@
 const express = require("express");
 const app = express();
 const db = require("./models/db");
+const bodyParser = require('body-parser');
+const passport = require('passport');
 
-const users = require("./routes/api/users")
+// 跨域.  CORS ---------- Start
+const cors = require('cors');
+
+app.use(cors({
+  origin: ['http://localhost:3000'], // 所要允许跨域的ip
+  methods: ['GET', 'POST'],
+  alloweHeaders: ['Conten-Type', 'Authorization']
+}));
+// 跨域.  CORS ---------- End
+
+// 引入routes
+const users = require("./routes/api/users");
+
+// 使用body-parser中间件
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+// passport 初始化
+app.use(passport.initialize());
 
 app.get("/",(req,res) => {
     res.send("Hello World!");
