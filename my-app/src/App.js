@@ -1,13 +1,13 @@
 import './App.css';
-import { HashRouter, Route, Routes } from 'react-router-dom';
 import Router from './router';
-import Login from './pages/Login';
+import { Button } from 'antd';
 
 function App() {
   return (
     <div className="App">
       Hello World!
       <Router />
+      <Button>按钮</Button>
     </div>
   );
 }

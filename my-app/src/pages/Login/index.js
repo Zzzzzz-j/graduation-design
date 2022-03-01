@@ -1,5 +1,6 @@
 import React from 'react';
 import { testApi, registerAccount } from '../../api/index';
+import { Button } from 'antd';
 import './index.scss';
 
 
@@ -17,7 +18,7 @@ const Login = () => {
         <div className='login'>
             Hello World!
             <div className='login-main'>
-                
+                <Button>按钮</Button>
             </div>
         </div>
     )
