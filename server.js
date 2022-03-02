@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-const db = require("./models/db");
 const bodyParser = require('body-parser');
 const passport = require('passport');
 
@@ -23,6 +22,7 @@ app.use(bodyParser.json());
 
 // passport 初始化
 app.use(passport.initialize());
+require('./config/passport')(passport);
 
 app.get("/",(req,res) => {
     res.send("Hello World!");

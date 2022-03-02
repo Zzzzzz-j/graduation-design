@@ -1,21 +1,33 @@
 const model = require('../models/userModel')
+const jwt = require('jsonwebtoken');
 
 module.exports = {
     async login(req, res) {
-        // 3. 连接数据库
-        let results = await model.getUserByNameAndPwd(username, password);
-        console.log(results)
-        // 4. 根据查询的结果跳转(或输出)不同的结果页面
-        if (results.length > 0) {
-            // redirect重定向: 它会将页面的地址重新定向到指定的路由
-            // 向session作用域中存放loginUser变量
-            ctx.session.loginUser = results[0].nickname;
-            ctx.session.userId = results[0].user_id;
-            ctx.redirect("/");
+        const { password, phone } = req.body;
+        const phoneResults = await model.getUserByPhone(phone);
+        if (phoneResults.length > 0) {
+            const pwdResults = await model.getUserByPassword(phone,password);
+            console.log('pwdResults',pwdResults);
+            if (pwdResults.length > 0) {
+                const { user_id, username, phone, password } = pwdResults[0];
+                const rule = {
+                    id: user_id,
+                    name: username,
+                    phone: phone,
+                    password: password
+                };
+                jwt.sign(rule, 'secret', { expiresIn: 1000 * 60 * 60 * 24 }, (err, token) => {
+                    if (err) throw err;
+                    res.json({
+                        success: true,
+                        token: 'Bearer ' + token
+                    });
+                });
+            } else {
+                res.json({ status: 1001, message: '密码错误!' })
+            }
         } else {
-            await ctx.render('error-login', {
-                message: '登陆失败，用户名或密码错误!'
-            })
+            res.json({ status: 1001, message: '该手机号还未注册!' })
         }
     },
     async regist(req, res) {

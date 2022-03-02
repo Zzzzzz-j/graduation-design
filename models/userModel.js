@@ -10,7 +10,7 @@ module.exports = {
     getUserByPhone(phone) {
         return db.query(`SELECT * FROM t_user where phone='${phone}'`);
     },
-    getUserByPassword(password) {
-        return db.query(`SELECT * FROM t_user where password='${password}'`);
+    getUserByPassword(phone,password) {
+        return db.query(`SELECT * FROM t_user where phone='${phone}' and password='${password}'`);
     }
 };

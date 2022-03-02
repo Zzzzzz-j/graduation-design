@@ -18,6 +18,10 @@ const instance = axios.create({
  */
 instance.interceptors.request.use(config => {
     console.log('请求被拦截')
+    // if (sessionStorage.token) {
+    //     config.headers.Authorization = sessionStorage.token
+    // }
+    config.headers.Authorization = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsIm5hbWUiOiJ6aHVqaWUiLCJwaG9uZSI6MTg4NjMzMjQ3MDUsInBhc3N3b3JkIjoiMTIzNDU2IiwiaWF0IjoxNjQ2MjI0NTA2LCJleHAiOjE3MzI2MjQ1MDZ9.IXXTmG6fVe7pxCFEFXWe07liIBXyshLj0l0IVYC_P3U"
     return config
 }, error => {
     return Promise.reject(error);
