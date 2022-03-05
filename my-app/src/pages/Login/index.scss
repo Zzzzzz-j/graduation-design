@@ -225,12 +225,19 @@
     .container.right-panel-active .overlay-right {
         transform: translateX(20%);
     }
-}
+    .ant-input-affix-wrapper > input.ant-input {
+        padding: 0;
+        border: none;
+        outline: none;
+        background: #eee;
+    }
 
-.ant-input-affix-wrapper > input.ant-input {
-    padding: 0;
-    border: none;
-    outline: none;
-    background: #eee;
+    .ant-form-item-has-error :not(.ant-input-disabled):not(.ant-input-borderless).ant-input, 
+    .ant-form-item-has-error :not(.ant-input-affix-wrapper-disabled):not(.ant-input-affix-wrapper-borderless).ant-input-affix-wrapper, 
+    .ant-form-item-has-error :not(.ant-input-number-affix-wrapper-disabled):not(.ant-input-number-affix-wrapper-borderless).ant-input-number-affix-wrapper, 
+    .ant-form-item-has-error :not(.ant-input-disabled):not(.ant-input-borderless).ant-input:hover, 
+    .ant-form-item-has-error :not(.ant-input-affix-wrapper-disabled):not(.ant-input-affix-wrapper-borderless).ant-input-affix-wrapper:hover, 
+    .ant-form-item-has-error :not(.ant-input-number-affix-wrapper-disabled):not(.ant-input-number-affix-wrapper-borderless).ant-input-number-affix-wrapper:hover {
+        background: #eee;
+    }
 }
-

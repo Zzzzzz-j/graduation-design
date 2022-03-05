@@ -1,18 +1,22 @@
-import React,{ useRef } from 'react';
+import React, { useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { testApi, registerAccount, login, getUserInfo } from '../../api/index';
 import { Form, Input, Button, message } from 'antd';
+import jwt_decode from "jwt-decode";
 import './index.scss';
 
-const Login = () => {
+export default function Login() {
     const container = useRef();
+
+    const history = useNavigate();
 
     React.useEffect(() => {
         testApi({ a: '11111' }).then(res => {
             console.log(res, '3333333333333');
         })
-        getUserInfo().then(res => {
-            console.log(res);
-        })
+        // getUserInfo().then(res => {
+        //     console.log(res);
+        // })
     }, [])
 
     const onRegisterFinish = (values) => {
@@ -37,6 +41,16 @@ const Login = () => {
         const { password, phone } = values;
         login({ phone: phone, password: password }).then(res => {
             console.log(res);
+            if (res.status === 200) {
+                sessionStorage.setItem('token', res.token);
+
+                // 解析token
+                const decode = jwt_decode(res.token);
+
+                history('/AccountManage');
+            } else {
+                message.error(res.message);
+            }
         })
     };
 
@@ -90,6 +104,10 @@ const Login = () => {
                                     max: 16,
                                     message: '请输入6-16位的密码!',
                                 },
+                                {
+                                    pattern: /^[^\s]*$/,
+                                    message: '密码不允许出现空格!'
+                                }
                             ]}
                         >
                             <Input.Password className='input' placeholder='请输入密码' maxLength={16} />
@@ -133,6 +151,10 @@ const Login = () => {
                                     max: 16,
                                     message: '请输入6-16位的密码!',
                                 },
+                                {
+                                    pattern: /^[^\s]*$/,
+                                    message: '密码不允许使用空格!'
+                                }
                             ]}
                         >
                             <Input.Password className='input' placeholder='请输入密码' maxLength={16} />
@@ -162,5 +184,3 @@ const Login = () => {
         </div>
     )
 }
-
-export default Login;

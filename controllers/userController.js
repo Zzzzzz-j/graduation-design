@@ -6,8 +6,8 @@ module.exports = {
         const { password, phone } = req.body;
         const phoneResults = await model.getUserByPhone(phone);
         if (phoneResults.length > 0) {
-            const pwdResults = await model.getUserByPassword(phone,password);
-            console.log('pwdResults',pwdResults);
+            const pwdResults = await model.getUserByPassword(phone, password);
+            console.log('pwdResults', pwdResults);
             if (pwdResults.length > 0) {
                 const { user_id, username, phone, password } = pwdResults[0];
                 const rule = {
@@ -16,10 +16,10 @@ module.exports = {
                     phone: phone,
                     password: password
                 };
-                jwt.sign(rule, 'secret', { expiresIn: 1000 * 60 * 60 * 24 }, (err, token) => {
+                jwt.sign(rule, 'secret', { expiresIn: 60 * 60 * 2 }, (err, token) => {
                     if (err) throw err;
                     res.json({
-                        success: true,
+                        status: 200,
                         token: 'Bearer ' + token
                     });
                 });
@@ -44,13 +44,14 @@ module.exports = {
             }
         }
     },
-    async checkUser(ctx) {
-        let { username } = ctx.query;
-        let results = await model.getUserByUsername(username);
-        if (results.length > 0) {
-            ctx.body = "fail";
+    async changepwd(req, res) {
+        const { password, id } = req.body;
+        const results = await model.updatePassword(password, id);
+        console.log(results,'000000000000000');
+        if (results.affectedRows) {
+            res.status(200).json({ status: 200, message: '删除成功!' });
         } else {
-            ctx.body = "success";
+            await res.status(200).json({ status: 1001, message: '删除失败!' });
         }
-    }
+    },
 }

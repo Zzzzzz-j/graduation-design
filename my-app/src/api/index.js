@@ -27,3 +27,10 @@ export function testApi(params) {
  export function getUserInfo(params) {
     return request("get", '/users/current', params);
 }
+
+/**
+ * 获取用户信息
+ */
+ export function changePassword(params) {
+    return request("post", '/users/changepwd', params);
+}

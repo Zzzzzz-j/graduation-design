@@ -2,6 +2,7 @@
  * 网络请求配置
  */
 import axios from 'axios';
+import { message } from 'antd';
 
 import { BASE_URL, TIMEOUT } from './config';
 
@@ -18,10 +19,10 @@ const instance = axios.create({
  */
 instance.interceptors.request.use(config => {
     console.log('请求被拦截')
-    // if (sessionStorage.token) {
-    //     config.headers.Authorization = sessionStorage.token
-    // }
-    config.headers.Authorization = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsIm5hbWUiOiJ6aHVqaWUiLCJwaG9uZSI6MTg4NjMzMjQ3MDUsInBhc3N3b3JkIjoiMTIzNDU2IiwiaWF0IjoxNjQ2MjI0NTA2LCJleHAiOjE3MzI2MjQ1MDZ9.IXXTmG6fVe7pxCFEFXWe07liIBXyshLj0l0IVYC_P3U"
+    if (sessionStorage.token) {
+        console.log('tokentoken');
+        config.headers.Authorization = sessionStorage.token
+    }
     return config
 }, error => {
     return Promise.reject(error);
@@ -31,9 +32,20 @@ instance.interceptors.request.use(config => {
  * http response 拦截器
  */
 instance.interceptors.response.use(res => {
-
+    console.log(res,'响应拦截');
     return res.data
 }, error => {
+    message.error(error.response.data);
+
+    const { status } = error.response;
+    if (status == 401) {
+        message.error('token值无效，请重新登录');
+        // 清除token
+        localStorage.removeItem('token');
+
+        // 页面跳转
+        this.$router.push('/login')
+    }
     return Promise.reject(error);
 })
 

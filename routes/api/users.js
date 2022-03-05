@@ -24,8 +24,13 @@ router.post("/login", controller.login)
 // @desc   return current user
 // @access Private
 router.get('/current', passport.authenticate('jwt', { session: false }), (req, res) => {
-    res.json('1233454567');
+    res.json(req.user);
 }
 );
+
+// @route  POST api/users/login
+// @desc   返回token jwt passport
+// @access public
+router.post("/changepwd", controller.changepwd)
 
 module.exports = router;
