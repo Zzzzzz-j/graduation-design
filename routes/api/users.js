@@ -28,9 +28,14 @@ router.get('/current', passport.authenticate('jwt', { session: false }), (req, r
 }
 );
 
-// @route  POST api/users/login
-// @desc   返回token jwt passport
-// @access public
-router.post("/changepwd", controller.changepwd)
+// @route  POST api/users/changepwd
+// @desc   返回json数据
+// @access Private
+router.post("/changepwd", passport.authenticate('jwt', { session: false }), controller.changepwd)
+
+// @route  GET api/users/account/list
+// @desc   return 账号列表
+// @access Private
+router.get('/account/list', passport.authenticate('jwt', { session: false }), controller.getAccountList);
 
 module.exports = router;

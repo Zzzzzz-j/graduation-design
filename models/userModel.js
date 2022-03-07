@@ -15,5 +15,8 @@ module.exports = {
     },
     updatePassword(password,id) {
         return db.query(`UPDATE t_user SET password=${password} WHERE user_id=${id}`)
+    },
+    getAccountList() {
+        return db.query(`SELECT * FROM t_user`);
     }
 };

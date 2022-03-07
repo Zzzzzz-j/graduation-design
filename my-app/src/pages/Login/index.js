@@ -47,7 +47,7 @@ export default function Login() {
                 // 解析token
                 const decode = jwt_decode(res.token);
 
-                history('/AccountManage');
+                history('/LoanApproval');
             } else {
                 message.error(res.message);
             }

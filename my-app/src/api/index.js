@@ -10,27 +10,34 @@ export function testApi(params) {
 /**
  * 注册账号
  */
- export function registerAccount(params) {
+export function registerAccount(params) {
     return request("post", '/users/register', params);
 }
 
 /**
  * 登录
  */
- export function login(params) {
+export function login(params) {
     return request("post", '/users/login', params);
 }
 
 /**
  * 获取用户信息
  */
- export function getUserInfo(params) {
+export function getUserInfo(params) {
     return request("get", '/users/current', params);
 }
 
 /**
- * 获取用户信息
+ * 修改密码
  */
- export function changePassword(params) {
+export function changePassword(params) {
     return request("post", '/users/changepwd', params);
+}
+
+/**
+ * 获取账号列表
+ */
+export function getAccountList(params) {
+    return request("get", '/users/account/list', params);
 }

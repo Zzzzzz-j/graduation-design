@@ -7,7 +7,6 @@ module.exports = {
         const phoneResults = await model.getUserByPhone(phone);
         if (phoneResults.length > 0) {
             const pwdResults = await model.getUserByPassword(phone, password);
-            console.log('pwdResults', pwdResults);
             if (pwdResults.length > 0) {
                 const { user_id, username, phone, password } = pwdResults[0];
                 const rule = {
@@ -47,11 +46,24 @@ module.exports = {
     async changepwd(req, res) {
         const { password, id } = req.body;
         const results = await model.updatePassword(password, id);
-        console.log(results,'000000000000000');
         if (results.affectedRows) {
             res.status(200).json({ status: 200, message: '删除成功!' });
         } else {
             await res.status(200).json({ status: 1001, message: '删除失败!' });
+        }
+    },
+    async getAccountList(req, res) {
+        const { pageNum, pageSize } = req.query;
+        const results = await model.getAccountList();
+        const length = results.length;
+        if (length > 0) {
+            if(parseInt(pageNum) * parseInt(pageSize) > length) {
+                res.json([...results.slice((pageNum - 1) * 10)])
+            } else {
+                res.json([...results.slice((pageNum - 1) * 10 - pageNum * 10)])
+            }
+        } else {
+            await res.status(404);
         }
     },
 }

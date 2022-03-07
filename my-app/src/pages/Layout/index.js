@@ -17,13 +17,14 @@ const { Header, Sider, Content } = Layout;
 
 export default function AccountManage(props) {
     const [visible, setVisible] = useState(false);
-    const [confirmLoading, setConfirmLoading] = useState(false);
+    const [state, setState] = useState('/LoanApproval');
 
     const dispatch = useDispatch();
     const userInfo = useSelector(state => state.user_info);
     const [form] = Form.useForm();
 
     const history = useNavigate();
+    const location = useLocation();
     const menu = (
         <Menu>
             <Menu.Item key="0">
@@ -37,7 +38,6 @@ export default function AccountManage(props) {
 
     React.useEffect(() => {
         getUserInfo().then(res => {
-            console.log(res);
             dispatch({ type: USERINFO, data: res });
         })
     }, [])
@@ -59,9 +59,7 @@ export default function AccountManage(props) {
 
     const onFinish = (values) => {
         console.log('Success:', values);
-        const { password, newPassword, confirmNewPassword } = values;
-        console.log(password, newPassword, confirmNewPassword);
-        setConfirmLoading(true);
+        const { newPassword } = values;
         changePassword({ password: newPassword, id: userInfo.user_id }).then(res => {
             console.log(res);
             if (res.status === 200) {
@@ -80,6 +78,24 @@ export default function AccountManage(props) {
         console.log('Failed:', errorInfo);
     };
 
+    const menuChange = (key) => {
+        if (key === state) return;
+        switch (key) {
+            case '/LoanApproval':
+                setState('/LoanApproval')
+                history('/LoanApproval')
+                break;
+            case '/UserManage':
+                setState('/UserManage')
+                history('/UserManage')
+                break;
+            case '/AccountManage':
+                setState('/AccountManage')
+                history('/AccountManage')
+                break;
+        }
+    }
+
     return (
         <>
             <Layout className="layout-contaniner">
@@ -87,14 +103,14 @@ export default function AccountManage(props) {
                     <div className="logo">
                         <img className="logo-img" src={logoImg} alt="" />
                     </div>
-                    <Menu className="menu" theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-                        <Menu.Item className="menu-item" key="1" icon={<UserOutlined />}>
+                    <Menu className="menu" theme="dark" mode="inline" defaultSelectedKeys={[location.pathname]}>
+                        <Menu.Item className="menu-item" key="/LoanApproval" onClick={() => {menuChange('/LoanApproval')}} icon={<UserOutlined />}>
                             贷款审批
                         </Menu.Item>
-                        <Menu.Item className="menu-item" key="2" icon={<VideoCameraOutlined />}>
+                        <Menu.Item className="menu-item" key="/UserManage" onClick={() => {menuChange('/UserManage')}} icon={<VideoCameraOutlined />}>
                             用户管理
                         </Menu.Item>
-                        <Menu.Item className="menu-item" key="3" icon={<UploadOutlined />}>
+                        <Menu.Item className="menu-item" key="/AccountManage" onClick={() => {menuChange('/AccountManage')}} icon={<UploadOutlined />}>
                             账号管理
                         </Menu.Item>
                     </Menu>

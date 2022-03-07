@@ -9,7 +9,6 @@ opts.secretOrKey = 'secret';
 
 module.exports = passport => {
   passport.use(new JwtStrategy(opts, async (jwt_payload, done) => {
-    console.log('jwt_payload',jwt_payload);
     const results = await model.getUserByPhone(jwt_payload.phone);
     if (results.length > 0) {
       return done(null, results[0]);

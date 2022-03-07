@@ -18,9 +18,7 @@ const instance = axios.create({
  * http request 拦截器
  */
 instance.interceptors.request.use(config => {
-    console.log('请求被拦截')
     if (sessionStorage.token) {
-        console.log('tokentoken');
         config.headers.Authorization = sessionStorage.token
     }
     return config
@@ -32,9 +30,9 @@ instance.interceptors.request.use(config => {
  * http response 拦截器
  */
 instance.interceptors.response.use(res => {
-    console.log(res,'响应拦截');
     return res.data
 }, error => {
+    console.log('error',error);
     message.error(error.response.data);
 
     const { status } = error.response;
