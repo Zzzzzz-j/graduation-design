@@ -9,10 +9,11 @@ import LoanApproval from '../pages/LoanApproval';
 const BasicRoute = () => {
     const location = useLocation();
     const history = useNavigate();
-    const isLogin = sessionStorage.token ? true : false;
 
     React.useEffect(() => {
+        const isLogin = sessionStorage.token ? true : false;
         if (location.pathname != '/login' && isLogin === false) {
+            console.log('/login11111');
             history('/login');
         }
     }, [])

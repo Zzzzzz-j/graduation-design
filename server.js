@@ -14,6 +14,7 @@ app.use(cors({
 // 跨域.  CORS ---------- End
 
 // 引入routes
+const accounts = require("./routes/api/accounts");
 const users = require("./routes/api/users");
 
 // 使用body-parser中间件
@@ -28,6 +29,7 @@ app.get("/",(req,res) => {
     res.send("Hello World!");
 })
 
+app.use("/api/accounts", accounts);
 app.use("/api/users", users);
 
 const port = process.env.PORT || 5000;

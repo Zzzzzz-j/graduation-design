@@ -42,7 +42,7 @@ instance.interceptors.response.use(res => {
         localStorage.removeItem('token');
 
         // 页面跳转
-        this.$router.push('/login')
+        window.location.hash = '/login';
     }
     return Promise.reject(error);
 })

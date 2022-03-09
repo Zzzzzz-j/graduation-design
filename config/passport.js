@@ -1,6 +1,6 @@
 const JwtStrategy = require('passport-jwt').Strategy,
   ExtractJwt = require('passport-jwt').ExtractJwt;
-const model = require('../models/userModel')
+const model = require('../models/accountModel')
 
 
 const opts = {}
