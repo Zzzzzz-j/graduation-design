@@ -1,5 +1,6 @@
 import React,{ useState } from "react";
 import { Table, Space, Button, message, Modal } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import { getUserAccountList, deleteUserAccount } from '../../api';
 
 export default function UserManage() {
@@ -14,6 +15,7 @@ export default function UserManage() {
         getUserAccountListInfo(pageNum,pageSize);
     },[])
 
+    const history = useNavigate();
     const paginationProps = {
         pageSize: pageSize,
         current: pageNum,
@@ -49,6 +51,10 @@ export default function UserManage() {
             key: 'action',
             render: (text, record) => (
                 <Space size="middle">
+                    {
+                        record.info_status == 0 ? <Button type="link" disabled>详情</Button>
+                        : <Button onClick={() => history('/UserManage/UserDetails', { state: { id: record.user_id } })} type="link">详情</Button>
+                    }
                     <Button onClick={() => showModal(record)} type="link" danger>删除</Button>
                 </Space>
             ),

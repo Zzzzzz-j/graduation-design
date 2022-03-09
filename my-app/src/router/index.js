@@ -5,6 +5,7 @@ import Layout from '../pages/Layout';
 import AccountManage from '../pages/AccountManage';
 import UserManage from '../pages/UserManage';
 import LoanApproval from '../pages/LoanApproval';
+import UserDetails from '../pages/UserDetails';
 
 const BasicRoute = () => {
     const location = useLocation();
@@ -24,6 +25,7 @@ const BasicRoute = () => {
             <Route path="/" element={<Layout />}>
                 <Route path='LoanApproval' element={<LoanApproval />} />
                 <Route path='UserManage' element={<UserManage />} />
+                <Route path='UserManage/UserDetails' element={<UserDetails />} />
                 <Route path='AccountManage' element={<AccountManage />} />
             </Route>
             <Route path="*" element={<Navigate to="/login" />} />

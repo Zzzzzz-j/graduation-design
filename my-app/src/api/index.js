@@ -62,3 +62,10 @@ export function getAccountList(params) {
  export function deleteUserAccount(params) {
     return request("post", '/users/delete/account', params);
 }
+
+/**
+ * 获取用户账号列表
+ */
+ export function getUserDetails(params) {
+    return request("get", '/users/details', params);
+}

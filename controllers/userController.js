@@ -39,4 +39,13 @@ module.exports = {
             await res.status(200).json({ status: 1001, message: '删除失败!' });
         }
     },
+    async getUserDetails(req, res) {
+        const { id } = req.query;
+        const results = await model.getUserInfoById(id);
+        if (results.length > 0) {
+            res.json({ status: 200, data: results[0] })
+        } else {
+            await res.status(404);
+        }
+    },
 }
