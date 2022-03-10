@@ -69,3 +69,10 @@ export function getAccountList(params) {
  export function getUserDetails(params) {
     return request("get", '/users/details', params);
 }
+
+/**
+ * 获取贷款申请列表
+ */
+ export function getApplicationtList(params) {
+    return request("get", '/users/application', params);
+}

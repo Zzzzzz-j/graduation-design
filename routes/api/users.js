@@ -14,8 +14,13 @@ router.get('/account/list', passport.authenticate('jwt', { session: false }), co
 router.post('/delete/account', passport.authenticate('jwt', { session: false }), controller.deleteAccount);
 
 // @route  GET api/users/details
-// @desc   return userInfo
+// @desc   return userInfo json
 // @access Private
 router.get('/details', passport.authenticate('jwt', { session: false }), controller.getUserDetails);
+
+// @route  GET api/users/application
+// @desc   return applicationInfo json
+// @access Private
+router.get('/application', passport.authenticate('jwt', { session: false }), controller.getApplicationList);
 
 module.exports = router;

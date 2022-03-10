@@ -33,6 +33,8 @@ module.exports = {
     async deleteAccount(req, res) {
         const { id } = req.body;
         const results = await model.deleteByUserId(id);
+        await model.deleteInfoByUserId(id);
+        await model.deleteApplyByUserId(id);
         if (results.affectedRows) {
             res.status(200).json({ status: 200, message: '删除成功!' });
         } else {
@@ -46,6 +48,33 @@ module.exports = {
             res.json({ status: 200, data: results[0] })
         } else {
             await res.status(404);
+        }
+    },
+    async getApplicationList(req, res) {
+        const { pageNum, pageSize, approve } = req.query;
+        const results = await model.getApplicationByApprove(approve);
+        const length = results.length;
+        if (length > 0) {
+            results.reverse();
+            if(parseInt(pageNum) * parseInt(pageSize) > length) {
+                res.json({
+                    pageNum: pageNum,
+                    pageSize: pageSize,
+                    total: length,
+                    status: 200,
+                    data: [...results.slice((pageNum - 1) * 10)]
+                })
+            } else {
+                res.json({
+                    pageNum: pageNum,
+                    pageSize: pageSize,
+                    total: length,
+                    status: 200,
+                    data: [...results.slice((pageNum - 1) * 10 , pageNum * 10)]
+                })
+            }
+        } else {
+            await res.json({ status: 200, total: 0, data: [] });
         }
     },
 }

@@ -14,10 +14,11 @@ import { DownOutlined } from '@ant-design/icons';
 import './index.scss';
 
 const { Header, Sider, Content } = Layout;
+const { SubMenu } = Menu;
 
 export default function AccountManage(props) {
     const [visible, setVisible] = useState(false);
-    const [state, setState] = useState('/LoanApproval');
+    const [state, setState] = useState('/LoanApproval/0');
 
     const dispatch = useDispatch();
     const userInfo = useSelector(state => state.user_info);
@@ -79,11 +80,18 @@ export default function AccountManage(props) {
     };
 
     const menuChange = (key) => {
-        if (key === state) return;
         switch (key) {
-            case '/LoanApproval':
-                setState('/LoanApproval')
-                history('/LoanApproval')
+            case '/LoanApproval/0':
+                setState('/LoanApproval/0')
+                history('/LoanApproval/0')
+                break;
+            case '/LoanApproval/1':
+                setState('/LoanApproval/1')
+                history('/LoanApproval/1')
+                break;
+            case '/LoanApproval/2':
+                setState('/LoanApproval/2')
+                history('/LoanApproval/2')
                 break;
             case '/UserManage':
                 setState('/UserManage')
@@ -103,14 +111,27 @@ export default function AccountManage(props) {
                     <div className="logo">
                         <img className="logo-img" src={logoImg} alt="" />
                     </div>
-                    <Menu className="menu" theme="dark" mode="inline" defaultSelectedKeys={[location.pathname]}>
-                        <Menu.Item className="menu-item" key="/LoanApproval" onClick={() => {menuChange('/LoanApproval')}} icon={<UserOutlined />}>
+                    <Menu 
+                    className="menu" 
+                    theme="dark" 
+                    mode="inline" 
+                    defaultSelectedKeys={[location.pathname]} 
+                    defaultOpenKeys={location.pathname === '/LoanApproval/0'
+                    || location.pathname === '/LoanApproval/1'
+                    || location.pathname === '/LoanApproval/2' ? ['/LoanApproval'] : []}
+                    >
+                        <SubMenu key="/LoanApproval" icon={<UserOutlined />} title="贷款审批">
+                            <Menu.Item key="/LoanApproval/0" onClick={() => { menuChange('/LoanApproval/0') }}>未审批</Menu.Item>
+                            <Menu.Item key="/LoanApproval/1" onClick={() => { menuChange('/LoanApproval/1') }}>审批通过</Menu.Item>
+                            <Menu.Item key="/LoanApproval/2" onClick={() => { menuChange('/LoanApproval/2') }}>审批未通过</Menu.Item>
+                        </SubMenu>
+                        {/* <Menu.Item className="menu-item" key="/LoanApproval" onClick={() => { menuChange('/LoanApproval') }} icon={<UserOutlined />}>
                             贷款审批
-                        </Menu.Item>
-                        <Menu.Item className="menu-item" key="/UserManage" onClick={() => {menuChange('/UserManage')}} icon={<VideoCameraOutlined />}>
+                        </Menu.Item> */}
+                        <Menu.Item className="menu-item" key="/UserManage" onClick={() => { menuChange('/UserManage') }} icon={<VideoCameraOutlined />}>
                             用户管理
                         </Menu.Item>
-                        <Menu.Item className="menu-item" key="/AccountManage" onClick={() => {menuChange('/AccountManage')}} icon={<UploadOutlined />}>
+                        <Menu.Item className="menu-item" key="/AccountManage" onClick={() => { menuChange('/AccountManage') }} icon={<UploadOutlined />}>
                             账号管理
                         </Menu.Item>
                     </Menu>
