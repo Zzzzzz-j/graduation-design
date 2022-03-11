@@ -77,4 +77,13 @@ module.exports = {
             await res.json({ status: 200, total: 0, data: [] });
         }
     },
+    async examineAndApprove(req, res) {
+        const { id, status } = req.body;
+        const results = await model.updateApprove(id, status);
+        if (results.affectedRows) {
+            res.status(200).json({ status: 200, message: '审批成功!' });
+        } else {
+            await res.status(200).json({ status: 1001, message: '审批失败!' });
+        }
+    },
 }

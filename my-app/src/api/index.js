@@ -76,3 +76,10 @@ export function getAccountList(params) {
  export function getApplicationtList(params) {
     return request("get", '/users/application', params);
 }
+
+/**
+ * 贷款审批
+ */
+ export function examineAndApprove(params) {
+    return request("post", '/users/approve', params);
+}

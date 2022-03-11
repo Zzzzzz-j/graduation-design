@@ -23,4 +23,9 @@ router.get('/details', passport.authenticate('jwt', { session: false }), control
 // @access Private
 router.get('/application', passport.authenticate('jwt', { session: false }), controller.getApplicationList);
 
+// @route  GET api/users/delete/account
+// @desc   return success
+// @access Private
+router.post('/approve', passport.authenticate('jwt', { session: false }), controller.examineAndApprove);
+
 module.exports = router;

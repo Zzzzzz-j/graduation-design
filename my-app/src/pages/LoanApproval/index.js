@@ -1,15 +1,18 @@
 import React, { useState } from "react";
-import { Table, Space, Button, message } from 'antd';
-import { useLocation } from 'react-router-dom';
-import { getApplicationtList } from '../../api';
+import { Table, Button, message, Modal } from 'antd';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { getApplicationtList, examineAndApprove } from '../../api';
+import moment from 'moment';
 
 export default function LoanApproval() {
     const [pageSize, setPageSize] = useState(10);
     const [pageNum, setPageNum] = useState(1);
     const [total, setTotal] = useState(0);
     const [tableData, setTableData] = useState([]);
-    const [record, setRecord] = useState({});
+    const [isModalVisible, setIsModalVisible] = useState(false);
     const [approve, setApprove] = useState(0);
+    const [record, setRecord] = useState({});
+    const [modelState, setModelState] = useState(1);
 
     const location = useLocation();
 
@@ -17,9 +20,10 @@ export default function LoanApproval() {
         const state = setPageState();
         setPageNum(1);
         setTotal(0);
-        getApplicationtListInfo(1,pageSize,state);
+        getApplicationtListInfo(1, pageSize, state);
     }, [location.pathname])
 
+    const history = useNavigate();
     const paginationProps = {
         pageSize: pageSize,
         current: pageNum,
@@ -39,6 +43,7 @@ export default function LoanApproval() {
             title: '姓名',
             dataIndex: 'name',
             key: 'name',
+            render: (text, record) => (<Button onClick={() => history('/UserManage/UserDetails', { state: { id: record.user_id } })} type='link'>{text}</Button>)
         },
         {
             title: '贷款金额',
@@ -64,21 +69,27 @@ export default function LoanApproval() {
             title: '贷款时间',
             dataIndex: 'time',
             key: 'time',
+            render: (text) => `${text}年`,
         },
         {
-            title: '操作',
+            title: '审批操作',
             key: 'action',
             render: (text, record) => (
-                <Space size="middle">
-                    <Button type="link">审批</Button>
-                </Space>
+                <div>
+                    {
+                        approve !== 1 ? <Button onClick={() => showModal(record, 1)} type="link">通过</Button> : null
+                    }
+                    {
+                        approve !== 2 ? <Button onClick={() => showModal(record, 2)} type="link">不通过</Button> : null
+                    }
+                </div>
             ),
         },
     ];
 
     function setPageState() {
         let state = 0;
-        switch(location.pathname) {
+        switch (location.pathname) {
             case '/LoanApproval/0':
                 setApprove(0)
                 state = 0
@@ -107,9 +118,19 @@ export default function LoanApproval() {
         })
     }
 
+    function examineAndApproveInfo(id, status) {
+        return examineAndApprove({ id: id, status: status }).then(res => {
+            if (res.status === 200) {
+                message.success(res.message);
+            }
+        })
+    }
+
     function formattingData(data) {
         const arr = data.map(item => {
             item.apply_time = transformTimestamp(item.apply_time);
+            item.start_time = moment(Number(item.start_time + '000')).format('YYYY年MM月DD日');
+            item.end_time = moment(Number(item.end_time + '000')).format('YYYY年MM月DD日');
             return item
         })
         return arr;
@@ -131,12 +152,42 @@ export default function LoanApproval() {
 
     function changePage(value) {
         setPageNum(value);
-        getApplicationtListInfo(value,pageSize,approve);
+        getApplicationtListInfo(value, pageSize, approve);
     }
+
+    const showModal = (record, state) => {
+        setRecord(record);
+        setModelState(state);
+        setIsModalVisible(true);
+    };
+
+    const handleOk = async() => {
+        await examineAndApproveInfo(record.apply_id, modelState);
+        await getApplicationtListInfo(pageNum, pageSize, approve);
+        setIsModalVisible(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
 
     return (
         <div className="loan-approval">
             <Table columns={columns} dataSource={tableData} pagination={paginationProps} rowKey={(record) => record.user_id} />
+            <Modal
+                title="贷款审批"
+                visible={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText="确认"
+                cancelText="取消"
+            >
+                <p>
+                    {
+                        modelState === 1 ? '是否确认通过贷款申请？' : '是否确认不通过贷款申请?'
+                    }
+                </p>
+            </Modal>
         </div>
     )
 }
