@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Table, Space, Button, message, Modal } from 'antd';
 import { getAccountList, deleteAccount } from '../../api';
+import { useSelector } from 'react-redux';
 import './index.scss';
 
 export default function AccountManage() {
@@ -10,6 +11,7 @@ export default function AccountManage() {
     const [tableData, setTableData] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [record, setRecord] = useState({});
+    const userInfo = useSelector(state => state.user_info);
 
     React.useEffect(() => {
         getAccountListInfo(pageNum, pageSize);
@@ -50,7 +52,10 @@ export default function AccountManage() {
             key: 'action',
             render: (text, record) => (
                 <Space size="middle">
-                    <Button onClick={() => showModal(record)} type="link" danger>删除</Button>
+                    {
+                        userInfo.user_id === record.user_id ? <Button type="link" disabled>删除</Button> 
+                        : <Button onClick={() => showModal(record)} type="link" danger>删除</Button>
+                    }
                 </Space>
             ),
         },

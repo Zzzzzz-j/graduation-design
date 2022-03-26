@@ -45,11 +45,11 @@ module.exports = {
     },
     async changepwd(req, res) {
         const { password, id } = req.body;
-        const results = await model.deleteByUserId(password, id);
+        const results = await model.updatePassword(password, id);
         if (results.affectedRows) {
-            res.status(200).json({ status: 200, message: '删除成功!' });
+            res.status(200).json({ status: 200, message: '修改成功!' });
         } else {
-            await res.status(200).json({ status: 1001, message: '删除失败!' });
+            await res.status(200).json({ status: 1001, message: '修改失败!' });
         }
     },
     async getAccountList(req, res) {

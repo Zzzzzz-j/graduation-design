@@ -1,5 +1,6 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
+import { Image } from 'antd';
 import { getUserDetails } from '../../api';
 import './index.scss';
 
@@ -9,19 +10,19 @@ export default function UserDetails() {
     const history = useNavigate();
     const location = useLocation();
     const { state } = location;
-    
+
     React.useEffect(() => {
         console.log(state);
-        if(state === null) {
+        if (state === null) {
             history('/UserManage');
         } else {
             getUserDetails({ id: state.id }).then(res => {
-                if(res.status === 200) {
+                if (res.status === 200) {
                     setData(res.data);
                 }
             })
         }
-    },[])
+    }, [])
 
     return (
         <div className="user-details">
@@ -56,13 +57,13 @@ export default function UserDetails() {
             <div className="item">
                 <span className="title">身份证正面照:</span>
                 {
-                    data.id_card_front ? <img src={data.id_card_front} alt="" /> : <span className="text">暂无数据</span>
+                    data.id_card_front ? <Image width={300} height={180} src={data.id_card_front} /> : <span className="text">暂无数据</span>
                 }
             </div>
             <div className="item">
                 <span className="title">身份证背面照:</span>
                 {
-                    data.id_card_reverse ? <img src={data.id_card_reverse} alt="" /> : <span className="text">暂无数据</span>
+                    data.id_card_reverse ? <Image width={300} height={180} src={data.id_card_reverse} /> : <span className="text">暂无数据</span>
                 }
             </div>
         </div>

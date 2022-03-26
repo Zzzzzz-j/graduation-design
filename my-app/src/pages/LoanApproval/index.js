@@ -69,7 +69,12 @@ export default function LoanApproval() {
             title: '贷款时间',
             dataIndex: 'time',
             key: 'time',
-            render: (text) => `${text}年`,
+        },
+        {
+            title: '利率(月)',
+            dataIndex: 'rate',
+            key: 'rate',
+            render: (text) => (`${text}%`)
         },
         {
             title: '审批操作',
@@ -129,8 +134,8 @@ export default function LoanApproval() {
     function formattingData(data) {
         const arr = data.map(item => {
             item.apply_time = transformTimestamp(item.apply_time);
-            item.start_time = moment(Number(item.start_time + '000')).format('YYYY年MM月DD日');
-            item.end_time = moment(Number(item.end_time + '000')).format('YYYY年MM月DD日');
+            item.start_time = moment(Number(item.start_time)).format('YYYY年MM月DD日');
+            item.end_time = moment(Number(item.end_time)).format('YYYY年MM月DD日');
             return item
         })
         return arr;
