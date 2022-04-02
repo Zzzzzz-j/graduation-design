@@ -178,7 +178,7 @@ export default function LoanApproval() {
 
     return (
         <div className="loan-approval">
-            <Table columns={columns} dataSource={tableData} pagination={paginationProps} rowKey={(record) => record.user_id} />
+            <Table columns={columns} dataSource={tableData} pagination={paginationProps} rowKey={(record) => record.apply_id} />
             <Modal
                 title="贷款审批"
                 visible={isModalVisible}
