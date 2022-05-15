@@ -43,4 +43,9 @@ router.get('/account/list', passport.authenticate('jwt', { session: false }), co
 // @access Private
 router.post('/delete/account', passport.authenticate('jwt', { session: false }), controller.deleteAccount);
 
+// @route  post api/accounts/update/account/info
+// @desc   return success
+// @access Private
+router.post('/update/account/info', passport.authenticate('jwt', { session: false }), controller.updateAccount);
+
 module.exports = router;

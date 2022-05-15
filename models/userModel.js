@@ -4,6 +4,9 @@ module.exports = {
     getAccountList() {
         return db.query(`SELECT * FROM e_user`);
     },
+    getAccountListAsSearch(search) {
+        return db.query(`SELECT * FROM e_user WHERE username like '%${search}%'`);
+    },
     deleteByUserId(id) {
         return db.query(`DELETE FROM e_user WHERE user_id=${id}`);
     },

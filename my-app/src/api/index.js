@@ -83,3 +83,10 @@ export function getAccountList(params) {
  export function examineAndApprove(params) {
     return request("post", '/users/approve', params);
 }
+
+/**
+ * 编辑账号信息
+ */
+ export function updateAccount(params) {
+    return request("post", '/accounts/update/account/info', params);
+}

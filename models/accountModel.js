@@ -19,7 +19,13 @@ module.exports = {
     getAccountList() {
         return db.query(`SELECT * FROM t_user`);
     },
+    getAccountListAsSearch(search) {
+        return db.query(`SELECT * FROM t_user WHERE username like '%${search}%'`);
+    },
     deleteByUserId(id) {
         return db.query(`DELETE FROM t_user WHERE user_id=${id}`);
-    }
+    },
+    updateAccount(username, id) {
+        return db.query(`UPDATE t_user SET username='${username}' WHERE user_id=${id}`)
+    },
 };

@@ -15,6 +15,10 @@ import './index.scss';
 
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
+const Style = {
+    fontSize: '17px',
+    fontWeit: '300'
+}
 
 export default function AccountManage(props) {
     const [visible, setVisible] = useState(false);
@@ -120,10 +124,10 @@ export default function AccountManage(props) {
                     || location.pathname === '/LoanApproval/1'
                     || location.pathname === '/LoanApproval/2' ? ['/LoanApproval'] : []}
                     >
-                        <SubMenu key="/LoanApproval" icon={<UserOutlined />} title="贷款审批">
-                            <Menu.Item key="/LoanApproval/0" onClick={() => { menuChange('/LoanApproval/0') }}>未审批</Menu.Item>
-                            <Menu.Item key="/LoanApproval/1" onClick={() => { menuChange('/LoanApproval/1') }}>审批通过</Menu.Item>
-                            <Menu.Item key="/LoanApproval/2" onClick={() => { menuChange('/LoanApproval/2') }}>审批未通过</Menu.Item>
+                        <SubMenu style={Style} key="/LoanApproval" icon={<UserOutlined />} title="贷款审批">
+                            <Menu.Item style={Style} key="/LoanApproval/0" onClick={() => { menuChange('/LoanApproval/0') }}>未审批</Menu.Item>
+                            <Menu.Item style={Style} key="/LoanApproval/1" onClick={() => { menuChange('/LoanApproval/1') }}>审批通过</Menu.Item>
+                            <Menu.Item style={Style} key="/LoanApproval/2" onClick={() => { menuChange('/LoanApproval/2') }}>审批未通过</Menu.Item>
                         </SubMenu>
                         {/* <Menu.Item className="menu-item" key="/LoanApproval" onClick={() => { menuChange('/LoanApproval') }} icon={<UserOutlined />}>
                             贷款审批

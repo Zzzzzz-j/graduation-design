@@ -53,8 +53,8 @@ module.exports = {
         }
     },
     async getAccountList(req, res) {
-        const { pageNum, pageSize } = req.query;
-        const results = await model.getAccountList();
+        const { pageNum, pageSize, search } = req.query;
+        const results = search == '' ? await model.getAccountList() : await model.getAccountListAsSearch(search);
         const length = results.length;
         if (length > 0) {
             results.reverse();
@@ -88,6 +88,15 @@ module.exports = {
             res.status(200).json({ status: 200, message: '删除成功!' });
         } else {
             await res.status(200).json({ status: 1001, message: '删除失败!' });
+        }
+    },
+    async updateAccount(req, res) {
+        const { username, id } = req.body;
+        const results = await model.updateAccount(username, id);
+        if (results.affectedRows) {
+            res.status(200).json({ status: 200, message: '修改成功!' });
+        } else {
+            await res.status(200).json({ status: 1001, message: '修改失败!' });
         }
     },
 }

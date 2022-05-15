@@ -1,20 +1,26 @@
 import React, { useState } from "react";
-import { Table, Space, Button, message, Modal } from 'antd';
-import { getAccountList, deleteAccount } from '../../api';
+import { Table, Space, Button, message, Modal, Input, Form } from 'antd';
+import { getAccountList, deleteAccount, updateAccount } from '../../api';
 import { useSelector } from 'react-redux';
 import './index.scss';
 
+const { Search } = Input;
+
 export default function AccountManage() {
+    const [form] = Form.useForm();
     const [pageSize, setPageSize] = useState(10);
     const [pageNum, setPageNum] = useState(1);
     const [total, setTotal] = useState(0);
     const [tableData, setTableData] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [visible, setVisible] = useState(false);
     const [record, setRecord] = useState({});
+    const [search, setSearch] = useState('');
+    const [compileInfo, setCompileInfo] = useState(null);
     const userInfo = useSelector(state => state.user_info);
 
     React.useEffect(() => {
-        getAccountListInfo(pageNum, pageSize);
+        getAccountListInfo(pageNum, pageSize, search);
     }, [])
 
     const paginationProps = {
@@ -38,7 +44,7 @@ export default function AccountManage() {
             key: 'username',
         },
         {
-            title: '电话',
+            title: '手机号',
             dataIndex: 'phone',
             key: 'phone',
         },
@@ -52,17 +58,18 @@ export default function AccountManage() {
             key: 'action',
             render: (text, record) => (
                 <Space size="middle">
+                    <Button onClick={() => showCompileModel(record)} type="link">编辑</Button>
                     {
-                        userInfo.user_id === record.user_id ? <Button type="link" disabled>删除</Button> 
-                        : <Button onClick={() => showModal(record)} type="link" danger>删除</Button>
+                        userInfo.user_id === record.user_id ? <Button type="link" disabled>删除</Button>
+                            : <Button onClick={() => showModal(record)} type="link" danger>删除</Button>
                     }
                 </Space>
             ),
         },
     ];
 
-    function getAccountListInfo(num, size) {
-        return getAccountList({ pageNum: num, pageSize: size }).then(res => {
+    function getAccountListInfo(num, size, input) {
+        return getAccountList({ pageNum: num, pageSize: size, search: input }).then(res => {
             console.log(res);
             if (res.status === 200) {
                 const data = formattingData(res.data);
@@ -97,7 +104,7 @@ export default function AccountManage() {
 
     function changePage(value) {
         setPageNum(value);
-        getAccountListInfo(value, pageSize);
+        getAccountListInfo(value, pageSize, search);
     }
 
     async function clickDeleteAccount() {
@@ -108,13 +115,19 @@ export default function AccountManage() {
                 message.error(res.message);
             }
         })
-        await getAccountListInfo(pageNum, pageSize);
+        await getAccountListInfo(pageNum, pageSize, search);
     }
 
     const showModal = (record) => {
         setRecord(record);
         setIsModalVisible(true);
     };
+
+    const showCompileModel = (record) => {
+        setCompileInfo(record);
+        form.setFieldsValue(record);
+        setVisible(true);
+    }
 
     const handleOk = () => {
         clickDeleteAccount();
@@ -125,8 +138,46 @@ export default function AccountManage() {
         setIsModalVisible(false);
     };
 
+    const onSearch = (value) => {
+        setSearch(value);
+        getAccountListInfo(pageNum, pageSize, value);
+    }
+
+    const onFinish = async (values) => {
+        const { username } = values;
+        await updateAccount({ username: username, id: compileInfo.user_id }).then((res) => {
+            if (res.status === 200) {
+                message.success('修改成功!');
+            } else {
+                message.error(res.message);
+            }
+        })
+        await getAccountListInfo(pageNum, pageSize, search);
+        setVisible(false);
+        form.resetFields();
+        setCompileInfo(null);
+    }
+
+    const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+        form.resetFields();
+        setCompileInfo(null);
+    };
+
+    function handleProfileCancel() {
+        setVisible(false);
+    };
+
     return (
         <div className="account-manage">
+            <Search
+                placeholder="输入名称进行查询"
+                allowClear
+                enterButton="查询"
+                size="large"
+                className="account-search"
+                onSearch={onSearch}
+            />
             <Table columns={columns} dataSource={tableData} pagination={paginationProps} rowKey={(record) => record.user_id} />
             <Modal
                 title="删除账号"
@@ -137,6 +188,54 @@ export default function AccountManage() {
                 cancelText="取消"
             >
                 <p>您确认要删除该账号吗?</p>
+            </Modal>
+            <Modal
+                title="编辑账号信息"
+                centered={true}
+                visible={visible}
+                onCancel={() => setVisible(false)}
+                footer={null}
+            >
+                <Form
+                    name="basic"
+                    form={form}
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                    autoComplete="off"
+                    labelCol={{ span: 5 }}
+                    wrapperCol={{ span: 16 }}
+                >
+                    <Form.Item
+                        name="username"
+                        label="名称"
+                        style={{ textAlign: 'start' }}
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入名称'
+                            },
+                        ]}
+                    >
+                        <Input className="input" maxLength={10} placeholder='请输入名称' />
+                    </Form.Item>
+                    <Form.Item
+                        name="phone"
+                        label="手机号"
+                        style={{ textAlign: 'start' }}
+                    >
+                        <Input className="input" placeholder='请输入手机号' disabled/>
+                    </Form.Item>
+                    <Form.Item>
+                        <div className="changepwd-footer">
+                            <Button type="primary" style={{ marginRight: '45px' }} size='large' className='btn' htmlType="submit">
+                                提交
+                            </Button>
+                            <Button type="primary" size='large' className='btn' onClick={handleProfileCancel}>
+                                取消
+                            </Button>
+                        </div>
+                    </Form.Item>
+                </Form>
             </Modal>
         </div>
     )

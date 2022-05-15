@@ -1,7 +1,9 @@
 import React,{ useState } from "react";
-import { Table, Space, Button, message, Modal } from 'antd';
+import { Table, Space, Button, message, Modal, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { getUserAccountList, deleteUserAccount } from '../../api';
+
+const { Search } = Input;
 
 export default function UserManage() {
     const [pageSize, setPageSize] = useState(10);
@@ -10,9 +12,10 @@ export default function UserManage() {
     const [tableData, setTableData] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [record, setRecord] = useState({});
+    const [search, setSearch] = useState('');
 
     React.useEffect(() => {
-        getUserAccountListInfo(pageNum,pageSize);
+        getUserAccountListInfo(pageNum,pageSize,search);
     },[])
 
     const history = useNavigate();
@@ -37,7 +40,7 @@ export default function UserManage() {
             key: 'username',
         },
         {
-            title: '电话',
+            title: '手机号',
             dataIndex: 'phone',
             key: 'phone',
         },
@@ -61,8 +64,8 @@ export default function UserManage() {
         },
     ];
 
-    function getUserAccountListInfo(num, size) {
-        return getUserAccountList({ pageNum: num, pageSize: size }).then(res => {
+    function getUserAccountListInfo(num, size, input) {
+        return getUserAccountList({ pageNum: num, pageSize: size, search: input }).then(res => {
             console.log(res);
             if (res.status === 200) {
                 const data = formattingData(res.data);
@@ -97,7 +100,7 @@ export default function UserManage() {
 
     function changePage(value) {
         setPageNum(value);
-        getUserAccountListInfo(value, pageSize);
+        getUserAccountListInfo(value, pageSize, search);
     }
 
     async function clickDeleteUser() {
@@ -108,7 +111,7 @@ export default function UserManage() {
                 message.error(res.message);
             }
         })
-        await getUserAccountListInfo(pageNum,pageSize);
+        await getUserAccountListInfo(pageNum,pageSize,search);
     }
 
     const showModal = (record) => {
@@ -125,8 +128,21 @@ export default function UserManage() {
         setIsModalVisible(false);
     };
 
+    const onSearch = (value) => {
+        setSearch(value);
+        getUserAccountListInfo(pageNum, pageSize, value);
+    }
+
     return (
         <div className="user-manage">
+            <Search
+                placeholder="输入名称进行查询"
+                allowClear
+                enterButton="查询"
+                size="large"
+                style={{ width: '340px', margin: '10px 0 20px 0', float: 'left' }}
+                onSearch={onSearch}
+            />
             <Table columns={columns} dataSource={tableData} pagination={paginationProps} rowKey={(record) => record.user_id} />
             <Modal
                 title="删除账号"

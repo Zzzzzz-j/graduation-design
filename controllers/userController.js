@@ -2,8 +2,8 @@ const model = require('../models/userModel')
 
 module.exports = {
     async getAccountList(req, res) {
-        const { pageNum, pageSize } = req.query;
-        const results = await model.getAccountList();
+        const { pageNum, pageSize, search } = req.query;
+        const results = search == '' ? await model.getAccountList() : await model.getAccountListAsSearch(search);
         const length = results.length;
         if (length > 0) {
             results.reverse();
