@@ -48,7 +48,6 @@ export default function AccountManage(props) {
     }, [])
 
     function logOut() {
-        console.log('logout');
         sessionStorage.removeItem('token');
         history('/login');
     }
@@ -69,8 +68,7 @@ export default function AccountManage(props) {
             console.log(res);
             if (res.status === 200) {
                 message.success('修改成功!');
-                userInfo.password = newPassword;
-                dispatch({ type: USERINFO, data: userInfo });
+                logOut();
             } else {
                 message.error(res.message);
             }
