@@ -51,8 +51,8 @@ module.exports = {
         }
     },
     async getApplicationList(req, res) {
-        const { pageNum, pageSize, approve } = req.query;
-        const results = await model.getApplicationByApprove(approve);
+        const { pageNum, pageSize, approve, search } = req.query;
+        const results = search == '' ? await model.getApplicationByApprove(approve) : await model.getApplicationByApproveAsSearch(approve,search);
         const length = results.length;
         if (length > 0) {
             results.reverse();

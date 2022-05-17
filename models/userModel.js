@@ -22,6 +22,9 @@ module.exports = {
     getApplicationByApprove(approve) {
         return db.query(`SELECT * FROM e_loan_application WHERE approve=${approve}`);
     },
+    getApplicationByApproveAsSearch(approve, search) {
+        return db.query(`SELECT * FROM e_loan_application WHERE approve=${approve} AND name like '%${search}%'`);
+    },
     updateApprove(id, status) {
         return db.query(`UPDATE e_loan_application SET approve=${status} WHERE apply_id=${id}`)
     },

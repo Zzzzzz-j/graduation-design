@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { Table, Button, message, Modal } from 'antd';
+import { Table, Button, message, Modal, Input } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getApplicationtList, examineAndApprove } from '../../api';
 import moment from 'moment';
+
+const { Search } = Input;
 
 export default function LoanApproval() {
     const [pageSize, setPageSize] = useState(10);
@@ -13,6 +15,7 @@ export default function LoanApproval() {
     const [approve, setApprove] = useState(0);
     const [record, setRecord] = useState({});
     const [modelState, setModelState] = useState(1);
+    const [search, setSearch] = useState('');
 
     const location = useLocation();
 
@@ -20,7 +23,7 @@ export default function LoanApproval() {
         const state = setPageState();
         setPageNum(1);
         setTotal(0);
-        getApplicationtListInfo(1, pageSize, state);
+        getApplicationtListInfo(1, pageSize, state, search);
     }, [location.pathname])
 
     const history = useNavigate();
@@ -111,8 +114,8 @@ export default function LoanApproval() {
         return state
     }
 
-    function getApplicationtListInfo(num, size, approve) {
-        return getApplicationtList({ pageNum: num, pageSize: size, approve: approve }).then(res => {
+    function getApplicationtListInfo(num, size, approve, input) {
+        return getApplicationtList({ pageNum: num, pageSize: size, approve: approve, search: input }).then(res => {
             console.log(res);
             if (res.status === 200) {
                 const data = formattingData(res.data);
@@ -157,7 +160,7 @@ export default function LoanApproval() {
 
     function changePage(value) {
         setPageNum(value);
-        getApplicationtListInfo(value, pageSize, approve);
+        getApplicationtListInfo(value, pageSize, approve, search);
     }
 
     const showModal = (record, state) => {
@@ -168,7 +171,7 @@ export default function LoanApproval() {
 
     const handleOk = async() => {
         await examineAndApproveInfo(record.apply_id, modelState);
-        await getApplicationtListInfo(pageNum, pageSize, approve);
+        await getApplicationtListInfo(pageNum, pageSize, approve, search);
         setIsModalVisible(false);
     };
 
@@ -176,8 +179,21 @@ export default function LoanApproval() {
         setIsModalVisible(false);
     };
 
+    const onSearch = (value) => {
+        setSearch(value);
+        getApplicationtListInfo(pageNum, pageSize, approve, value);
+    }
+
     return (
         <div className="loan-approval">
+            <Search
+                placeholder="输入名称进行查询"
+                allowClear
+                enterButton="查询"
+                size="large"
+                style={{ width: '340px', margin: '10px 0 20px 0', float: 'left' }}
+                onSearch={onSearch}
+            />
             <Table columns={columns} dataSource={tableData} pagination={paginationProps} rowKey={(record) => record.apply_id} />
             <Modal
                 title="贷款审批"
